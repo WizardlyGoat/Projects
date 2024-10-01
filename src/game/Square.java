@@ -1,4 +1,8 @@
 package game;
+
+import pieces.Piece;
+import pieces.Piece.Color;
+
 /**
  * @author John Hoffmann
  * 
@@ -9,66 +13,96 @@ public class Square implements Comparable<Square> {
 	private int x; // the x coordinate position (1 - 8) shown as (a - h)
 	private int y; // the y coordinate position (1 - 8)
 
-	// default constructor
 	public Square() {
 		x = 0;
 		y = 0;
 	}
 
-	/**************************************************************************************
-	 * Square constructor
-	 * 
-	 * @param x the x coordinate position (1 - 8) shown as (a - h)
-	 * @param y the y coordinate position (1 - 8)
+	/**
+	 * @param x the column (a - h)
+	 * @param y the row (1 - 8)
 	 */
 	public Square(int x, int y) {
 		this.x = x;
 		this.y = y;
-	} // end Square constructor
+	}
 
-	/**************************************************************************************
-	 * Square constructor
-	 * 
+	/**
 	 * @param square the square being copied
 	 */
 	public Square(Square square) {
 		x = square.getX();
 		y = square.getY();
-	} // end Square constructor
-
-	/**************************************************************************************
-	 * sameSquare determines if the given square is the same as the this square
-	 * 
-	 * @param square the square being compared to
-	 * @return true if they are the same square, false otherwise
-	 */
-	public boolean sameSquare(Square square) {
-		if (square.getX() == x && square.getY() == y) {
-			return true;
-		} else {
-			return false;
-		}
-	} // end sameSquare
-
-	/**************************************************************************************
-	 * sameSquare determines if the given coordinates are the same as this square's
-	 * coordinates
-	 * 
-	 * @param x the x coordinate position (1 - 8) shown as (a - h)
-	 * @param y the y coordinate position (1 - 8)
-	 * @return true if they are the same square, false otherwise
-	 */
-	public boolean sameSquare(int x, int y) {
-		if (this.x == x && this.y == y) {
-			return true;
-		} else {
-			return false;
-		}
-	} // end sameSquare
+	}
 
 	/**
-	 * checks to see if getValue() is equal
+	 * isFirstRank determines if the square is on the first rank, relative to the
+	 * color. White's first rank is 1, Black's first rank is 8
+	 * 
+	 * @param color the color who's perspective is taken
+	 * @return true, if the square is on the first rank
 	 */
+	public boolean isFirstRank(Piece.Color color) {
+		if (y == (color == Color.WHITE ? 1 : 8)) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * isBackRank does the opposite of isFirstRank. White's back rank is 8, Black's
+	 * back rank is 1
+	 * 
+	 * @param color the color who's perspective is taken
+	 * @return true, if the square is on the back rank
+	 */
+	public boolean isBackRank(Piece.Color color) {
+		return !isFirstRank(color);
+	}
+
+	/**
+	 * isEdgeRank determines if the square is on either the first rank or back rank
+	 * 
+	 * @return true, if y is 1 or 8
+	 */
+	public boolean isEdgeRank() {
+		return y == 1 || y == 8;
+	}
+
+	/**
+	 * getValue returns a unique value for the square (used in compareTo and equals
+	 * methods)
+	 * 
+	 * @return (x * 10) + y
+	 */
+	public int getValue() {
+		return (x * 10) + y;
+	}
+
+	// getters and setters
+	public void setPosition(int x, int y) {
+		this.x = x;
+		this.y = y;
+	}
+
+	public void setPosition(Square square) {
+		x = square.getX();
+		y = square.getY();
+	}
+
+	public void setPosition(gui.nodes.Square square) {
+		x = square.getC();
+		y = square.getR();
+	}
+
+	public int getX() {
+		return x;
+	}
+
+	public int getY() {
+		return y;
+	}
+
 	@Override
 	public boolean equals(Object other) {
 		if (!(other instanceof Square)) {
@@ -81,82 +115,25 @@ public class Square implements Comparable<Square> {
 		return false;
 	}
 
-	@Override
 	/**
-	 * subtracts getValue() of the squares
+	 * overloaded equals method for when coordinates are given instead of a square
+	 * 
+	 * @param x the column
+	 * @param y the row
+	 * @return true if same square, false otherwise
 	 */
+	public boolean equals(int x, int y) {
+		Square square = new Square(x, y);
+		return equals(square);
+	}
+
+	@Override
 	public int compareTo(Square square) {
 		return getValue() - square.getValue();
 	}
 
-	/**
-	 * getValue returns a unique value for the square
-	 * 
-	 * @return (x * 10) + y
-	 */
-	public int getValue() {
-		return (x * 10) + y;
-	}
-
-	/***************************************************************************************
-	 * isDark determines if this square is light or dark
-	 * 
-	 * @param nothing
-	 * @return true if dark, false if light
-	 */
-	public boolean isDark() {
-		if ((x + y) % 2 == 0) {
-			return true;
-		} else {
-			return false;
-		}
-	} // end isDark
-
-	// getters and setters
-	public void setX(int x) {
-		this.x = x;
-	}
-
-	public void setY(int y) {
-		this.y = y;
-	}
-
-	public void setPosition(int x, int y) {
-		this.x = x;
-		this.y = y;
-	}
-
-	public void setPosition(Square square) {
-		x = square.getX();
-		y = square.getY();
-	}
-
-	public int getX() {
-		return x;
-	}
-
-	public char getXCharacter(int x) {
-		return (char) (x + 96);
-	}
-
-	public int getY() {
-		return y;
-	}
-
-	public String getStringPosition() {
-		if (x == 0) {
-			return "removed";
-		} else {
-			return x + "" + y;
-		}
-	}
-
 	@Override
 	public String toString() {
-		if (x == 0) {
-			return "removed";
-		} else {
-			return getXCharacter(x) + "" + y;
-		}
+		return ((char) (x + 96)) + "" + y;
 	}
 }

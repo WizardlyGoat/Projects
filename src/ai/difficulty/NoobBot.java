@@ -118,7 +118,7 @@ public class NoobBot extends Difficulty {
 	@Override
 	public double getDangerAwareness(BoardAnalyzer boardAnalyzer, Exchange exchange) {
 		Logger logger = boardAnalyzer.getDangerLogger();
-		int awareness = 99;
+		int awareness = random.nextInt(99); // 0 - 99
 		boolean realDanger = exchange.getLoss() < 0.0;
 
 		logger.print("  ");
